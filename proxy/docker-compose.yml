@@ -1,0 +1,13 @@
+services:
+  pizza-proxy:
+    build: .
+    container_name: pizza-proxy
+    ports:
+      - 5009:5009
+    depends_on:
+      - pizza-proxy-selenium
+    restart: unless-stopped
+  pizza-proxy-selenium:
+    image: selenium/standalone-chrome:4.25.0
+    container_name: pizza-proxy-selenium
+    restart: unless-stopped

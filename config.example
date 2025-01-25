@@ -1,0 +1,29 @@
+#define WIFI_SSID "SSID"
+#define WIFI_PASSWORD "PASSWORD"
+
+
+#define API_URL "http://192.168.0.42:5009"  // укажите ip своего прокси
+#define CITY_ID 0  // можно найти вот тут https://api.papajohns.ru/city/list
+
+// энкодер
+#define ENCPIN1 8
+#define ENCPIN2 6
+#define ENCBTNPIN 7  // кнопка энкодера
+
+#define BRBPIN 10  // большая красная кнопка
+#define LEDPIN 9  // светодиод
+
+
+
+
+// Данные заказа
+#define ORDER_NAME "Андрей"
+#define ORDER_PHONE "+7..."
+#define ORDER_EMAIL ""
+#define ORDER_GPS_LAT 39.176134
+#define ORDER_GPS_LON 26.058903
+// #define ORDER_RESTAURANT_ID 0  // у меня без указания заказывается из какого то рандомного, а не ближайшего ресторана
+
+// #define MINPRICE 800  // не показывать с ценой меньше чем
+
+#define TRACK_UPDATE_INTERVAL 50000

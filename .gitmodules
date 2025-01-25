@@ -1,0 +1,3 @@
+[submodule "lib/LCD_1602_RUS_ALL"]
+	path = lib/LCD_1602_RUS_ALL
+	url = https://github.com/ssilver2007/LCD_1602_RUS_ALL.git
