@@ -2,8 +2,7 @@ import json
 import time
 
 import cherrypy
-from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
+import requests
 
 from mock_data import get_mock_data
 
@@ -11,7 +10,6 @@ from mock_data import get_mock_data
 MOCK = False
 
 API_URL = 'https://api.papajohns.ru'
-SELENIUM_URL = 'http://pizza-proxy-selenium:4444/wd/hub'
 
 
 class PapaJohnsProxy(object):
@@ -19,7 +17,7 @@ class PapaJohnsProxy(object):
     def default(self, *args, **kwargs):
         path = cherrypy.request.path_info
         method = cherrypy.request.method
-        headers: dict = cherrypy.request.headers
+        headers = dict(cherrypy.request.headers)
         query_string = cherrypy.request.query_string
         data = cherrypy.request.body.read() if cherrypy.request.body.length else None
 
@@ -32,35 +30,26 @@ class PapaJohnsProxy(object):
         if query_string:
             url += f'?{query_string}'
 
-        if content_type := headers.get('Content-Type', ''):
-            content_type = f"xhr.setRequestHeader('Content-Type', '{content_type}');"
+        headers_to_forward = {
+            k: v for k, v in headers.items()
+            if k.lower() not in ['host', 'content-length']
+        }
 
-        json_data = json.dumps(json.loads(data.decode())) if data else ''
+        try:
+            response = requests.request(
+                method=method,
+                url=url,
+                headers=headers_to_forward,
+                data=data,
+                timeout=10
+            )
 
-        script = f'''
-        var xhr = new XMLHttpRequest();
-        xhr.open('{method}', '{url}', true);
-        {content_type}
-        xhr.onreadystatechange = function() {{
-            if (xhr.readyState == 4) {{
-                window.result = xhr.responseText;
-                window.status = xhr.status;
-            }}
-        }};
-        xhr.send('{json_data}');
-        '''
+            cherrypy.response.status = response.status_code
+            return response.text
 
-        driver = webdriver.Remote(SELENIUM_URL, options=webdriver.ChromeOptions())
-        driver.get(API_URL)
-        driver.execute_script(script)
-
-        result = WebDriverWait(driver, 10).until(
-            lambda driver: driver.execute_script('return window.result;')
-        )
-        cherrypy.response.status = driver.execute_script('return window.status;')
-        driver.quit()
-
-        return result
+        except requests.exceptions.RequestException as e:
+            cherrypy.response.status = 500
+            return json.dumps({"error": str(e)})
 
 
 if __name__ == '__main__':

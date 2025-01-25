@@ -1,2 +1,2 @@
 CherryPy==18.9.0
-selenium==4.25.0
+requests==2.31.0
