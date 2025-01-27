@@ -29,7 +29,7 @@ PizzaTime button - это устройство на базе ESP32 для зак
 1. Склонируйте репозиторий с подмодулями:
 
 ```bash
-git clone --recursive https://github.com/skrepkaq/PizzaTime.git
+git clone --recursive https://github.com/skrepkaq/pizza-time.git
 ```
 2.  Откройте проект в [PlatformIO](https://platformio.org/install/integration/)
 
